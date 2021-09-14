@@ -1,0 +1,59 @@
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+
+<ng-container *ngIf="listUsers | async as data">
+  <p-table [value]="data" [(selection)]="user" responsiveLayout="scroll" class="styled-table" [autoLayout]="true">
+    <ng-template pTemplate="header">
+      <tr>
+        <th></th>
+        <th pSortableColumn="firstName">First name <p-sortIcon field="firstName"></p-sortIcon></th>
+        <th pSortableColumn="lastName">Last name <p-sortIcon field="lastName"></p-sortIcon></th>
+        <th pSortableColumn="country">Country <p-sortIcon field="country"></p-sortIcon></th>
+        <th pSortableColumn="nationality">Nationality <p-sortIcon field="nationality"></p-sortIcon></th>
+        <th pSortableColumn="mothersName">Mother's name <p-sortIcon field="mothersName"></p-sortIcon></th>
+        <th>Registed</th>
+        <th>Gender</th>
+        <th pSortableColumn="birthDate">Birth date <p-sortIcon field="birthDate"></p-sortIcon></th>
+        <th pSortableColumn="number">Number <p-sortIcon field="number"></p-sortIcon></th>
+        <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-user>
+      <tr *ngIf="user.id !== 0">
+        <td>
+          <p-tableRadioButton [value]="user"></p-tableRadioButton>
+        </td>
+        <td>{{user.firstName}}</td>
+        <td>{{user.lastName}}</td>
+        <td>{{user.country}}</td>
+        <td>{{user.nationality}}</td>
+        <td>{{user.mothersName}}</td>
+        <td>
+          <p-checkbox [ngModel]="user.registered" [binary]="true"></p-checkbox>
+        </td>
+        <td>{{user.gender}}</td>
+        <td>{{user.birthDate}}</td>
+        <td>{{user.number}}</td>
+        <td>{{user.status}}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-container>
+
+<div>&nbsp;</div>
+<div>&nbsp;</div>
+
+<div class="grid">
+  <span class="col-2">
+    <button (click)="newUser()" class="p-button-success" pButton type="button" icon="pi pi-plus" label="New"></button>
+  </span>
+  <span class="col-2">
+    <button (click)="onEdit(user)" class="p-button-primary" pButton type="button" icon="pi pi-pencil" label="Edit"></button>
+  </span>
+  <span class="col-2">
+    <button (click)="confirm(user)"
+            pButton type="button" icon="pi pi-trash" label="Delete"
+            class="p-button-danger"></button>
+  </span>
+  <span class="col-6">
+  </span>
+</div>

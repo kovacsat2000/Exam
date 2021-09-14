@@ -1,0 +1,76 @@
+<div class="dummyform">
+  <h3>Dummy form</h3>
+</div>
+<ng-container *ngIf="user" >
+
+  <div class="outerKl">
+    <form [formGroup]="form">
+    &nbsp;
+      <div class="innerKl">
+        <div class="grid">
+
+          <span class="col-1">
+          </span>
+          <span class="col-2">
+            <input pInputText class="badge" id="first-name" type="text" formControlName="firstName" placeholder="First name">
+          </span>
+          <span class="col-2">
+            <input pInputText class="badge" id="last-name" type="text" formControlName="lastName" placeholder="Last name">
+          </span>
+          <span class="col-2">
+            <input pInputText class="badge" id="nationality" type="text" formControlName="nationality" placeholder="Nationality">
+          </span>
+          <span class="col-2">
+            <input pInputText class="badge" id="mothersName" type="text" formControlName="mothersName" placeholder="Mother's name">
+          </span>
+          <span class="col-3">
+            <input pInputText class="badge" id="number" type="text" formControlName="number" placeholder="Number">
+          </span>
+        </div>
+        <div>&nbsp;</div>
+        <div class="grid">
+          <span class="col-1">
+          </span>
+          <span class="col-2">
+            <p-dropdown [options]="countries" [(ngModel)]="selectedCountry" optionLabel="name" formControlName="country"></p-dropdown>
+          </span>
+          <span class="col-2">
+            <p-calendar [(ngModel)]="user.birthDate" formControlName="birthDate"></p-calendar>
+          </span>
+
+        </div>
+
+
+      </div>
+
+      <div class="grid">
+      <span class="col-3">
+        <div class="genderPicker">
+          <h5>Gender</h5>
+          <p-selectButton [options]="genders" [(ngModel)]="selectedGender" formControlName="gender"></p-selectButton>
+        </div>
+      </span>
+      <span class="col-9">
+        <div class="genderPicker">
+          <h5>Status</h5>
+          <span class="col-4">
+            <p-radioButton name="status" label="Done" value="Done" [(ngModel)]="radioButtonSelectedValue" formControlName="status"></p-radioButton>
+          </span>
+          <span class="col-4">
+            <p-radioButton name="status" label="New" value="New" [(ngModel)]="radioButtonSelectedValue" formControlName="status"></p-radioButton>
+          </span>
+          <span class="col-4">
+            <p-radioButton name="status" label="In process" value="In process" [(ngModel)]="radioButtonSelectedValue" formControlName="status"></p-radioButton>
+          </span>
+        </div>
+      </span>
+      </div>
+    </form>
+
+    <div class="buttons">
+      <button class="p-button-success" pButton type="button" label="Save" icon="pi pi-check" (click)="saveButton()" ></button>
+      <button class="p-button-danger" pButton type="button" label="Back" icon="pi pi-times" (click)="back()"></button>
+    </div>
+  </div>
+
+</ng-container>

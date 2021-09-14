@@ -1,0 +1,46 @@
+.dummyform {
+  margin-top: 50px;
+  padding: 10px;
+  background-color: cornflowerblue;
+}
+
+.buttons {
+  margin-top: 5px;
+  padding: 15px;
+  background-color: royalblue;
+}
+
+.genderPicker {
+  margin-top: 20px;
+  padding: 30px;
+  background-color: royalblue;
+}
+
+.outerKl {
+  background-color: royalblue;
+}
+
+.innerKl {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+button {
+  padding: 10px;
+  margin: 12px;
+}
+
+input.badge {
+
+  background: royalblue;
+  color: white;
+  padding: 5px;
+  margin: 0;
+  display: inline-block;
+
+}
+
+input.badge:active, input.badge:focus {
+  background: blue;
+  outline: 0;
+}
