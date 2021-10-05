@@ -30,6 +30,8 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-browser/animations";
 import { ClonePipe } from './clone.pipe';
 import {AutoCompleteModule} from "primeng/autocomplete";
+import {TriStateCheckboxModule} from 'primeng/tristatecheckbox';
+import {ToastModule} from 'primeng/toast';
 
 @NgModule({
   declarations: [
@@ -67,7 +69,9 @@ import {AutoCompleteModule} from "primeng/autocomplete";
     NoopAnimationsModule,
     DropdownModule,
     AutoCompleteModule,
-    InputTextModule
+    InputTextModule,
+    TriStateCheckboxModule,
+    ToastModule
   ],
   providers: [
 

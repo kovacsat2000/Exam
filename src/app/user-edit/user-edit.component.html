@@ -1,10 +1,10 @@
 <div class="dummyform">
   <h3>Dummy form</h3>
 </div>
-<ng-container *ngIf="user" >
+<ng-container>
 
   <div class="outerKl">
-    <form [formGroup]="form">
+    <form [formGroup]="form" >
     &nbsp;
       <div class="innerKl">
         <div class="grid">
@@ -32,14 +32,12 @@
           <span class="col-1">
           </span>
           <span class="col-2">
-            <p-dropdown [options]="countries" [(ngModel)]="selectedCountry" optionLabel="name" formControlName="country"></p-dropdown>
+            <p-dropdown [options]="[''].concat(this.simulatedDb.countries)" formControlName="country"></p-dropdown>
           </span>
           <span class="col-2">
-            <p-calendar [(ngModel)]="user.birthDate" formControlName="birthDate"></p-calendar>
+            <p-calendar formControlName="birthDate"></p-calendar>
           </span>
-
         </div>
-
 
       </div>
 
@@ -47,20 +45,20 @@
       <span class="col-3">
         <div class="genderPicker">
           <h5>Gender</h5>
-          <p-selectButton [options]="genders" [(ngModel)]="selectedGender" formControlName="gender"></p-selectButton>
+          <p-selectButton [options]="this.simulatedDb.genders" formControlName="gender"></p-selectButton>
         </div>
       </span>
       <span class="col-9">
         <div class="genderPicker">
           <h5>Status</h5>
           <span class="col-4">
-            <p-radioButton name="status" label="Done" value="Done" [(ngModel)]="radioButtonSelectedValue" formControlName="status"></p-radioButton>
+            <p-radioButton name="status" label="Done" value="Done" formControlName="status"></p-radioButton>
           </span>
           <span class="col-4">
-            <p-radioButton name="status" label="New" value="New" [(ngModel)]="radioButtonSelectedValue" formControlName="status"></p-radioButton>
+            <p-radioButton name="status" label="New" value="New" formControlName="status"></p-radioButton>
           </span>
           <span class="col-4">
-            <p-radioButton name="status" label="In process" value="In process" [(ngModel)]="radioButtonSelectedValue" formControlName="status"></p-radioButton>
+            <p-radioButton name="status" label="In process" value="In process" formControlName="status"></p-radioButton>
           </span>
         </div>
       </span>
@@ -68,7 +66,7 @@
     </form>
 
     <div class="buttons">
-      <button class="p-button-success" pButton type="button" label="Save" icon="pi pi-check" (click)="saveButton()" ></button>
+      <button class="p-button-success" pButton type="button" label="Save" icon="pi pi-check" (click)="save()" ></button>
       <button class="p-button-danger" pButton type="button" label="Back" icon="pi pi-times" (click)="back()"></button>
     </div>
   </div>

@@ -10,7 +10,6 @@ export class HandleErrorAction implements Action {
   }
 }
 
-
 export function toActionCreatorPayload<S extends TypedAction<any>, E extends Action>(newSucceedAction: (payload: any) => S, newFailureAction: new (error: any) => E):
   UnaryFunction<any, Observable<any>> {
   return pipe(

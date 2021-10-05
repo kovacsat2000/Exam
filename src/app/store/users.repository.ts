@@ -6,26 +6,21 @@ import {map} from "rxjs/operators";
 
 @Injectable()
 export class UsersRepository {
-  constructor(private userService: UserService) {
-  }
 
-  // @ts-ignore
-  users: User[];
-
-  // @ts-ignore
-  user: User;
-
-  listUser(id: number): Observable<User> {
-    this.userService.onGetUser(id).subscribe(user => {
-      this.user = user;
-    });
-    return of(this.user);
-  }
+  constructor(private userService: UserService) {}
 
   list(): Observable<User[]> {
     return this.userService.onGet().pipe(
       map(users => {
         return users;
+      })
+    )
+  }
+
+  getUser(id: number): Observable<User> {
+    return this.userService.onGetUser(id).pipe(
+      map(user => {
+        return user;
       })
     )
   }

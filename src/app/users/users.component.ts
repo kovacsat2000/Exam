@@ -1,28 +1,35 @@
-import { Component, OnInit } from '@angular/core';
-import {UserService} from "../services/user.service";
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {User} from "../models/User";
 import {UsersFacade} from "../store/users.facade";
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {Router} from "@angular/router";
-import {ConfirmationService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
+import {takeUntil} from "rxjs/operators";
 
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css'],
-  providers: [ConfirmationService]
+  providers: [ConfirmationService, MessageService]
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent implements OnInit, OnDestroy {
 
   //Selectionhoz
   // @ts-ignore
   user: User;
 
-  //A strebol erkezo user tomb
-  listUsers: Observable<User[]>=this.usersFacade.listData;
+  //A storebol erkezo user tomb
+  listUsers: Observable<User[]> = this.usersFacade.listData;
 
-  constructor(private userService: UserService, private usersFacade: UsersFacade, private router: Router,
-              private confirmationService: ConfirmationService) {
+  constructor(private usersFacade: UsersFacade, private router: Router,
+              private confirmationService: ConfirmationService, private messageService: MessageService) {
+  }
+
+  private unsubscribe$ = new Subject<void>();
+
+  ngOnDestroy() {
+    this.unsubscribe$.next()
+    this.unsubscribe$.complete()
   }
 
   ngOnInit(): void {
@@ -32,12 +39,12 @@ export class UsersComponent implements OnInit {
 
   //Torli a usert a db-bol
   onDelete(user: User): void {
-    this.userService.onDelete(user.id).subscribe();
-    this.usersFacade.loadList();
+    this.usersFacade.deleteUser(user);
+    this.usersFacade.loadList()
   }
 
   //A torles megerositese
-  confirm(user: User) {
+  deleteConfirmation(user: User) {
     this.confirmationService.confirm({
       message: 'Are you sure that you want to delete the user?',
       accept: () => {
@@ -48,6 +55,9 @@ export class UsersComponent implements OnInit {
 
   //Atiranyit az edit komponensre id alapjan
   onEdit(user: User): void {
+    if (!user) {
+      this.editSelectMessage()
+    }
     if (this.user){
       this.router.navigateByUrl('edit/' + user.id).then();
     }
@@ -55,6 +65,10 @@ export class UsersComponent implements OnInit {
 
   //Atiranyit az edit komponensre 0 id-val, ami a user letrehozasa
   newUser() {
-    this.router.navigateByUrl('edit/0').then();
+    this.router.navigateByUrl('new/0').then();
+  }
+
+  editSelectMessage() {
+    this.messageService.add({severity:'info', summary:'Editing', detail:'For edit please select a user!'});
   }
 }

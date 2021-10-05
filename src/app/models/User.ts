@@ -4,7 +4,7 @@ export interface User {
   firstName: string;
   lastName: string;
   country?: string;
-  nationality: string[];
+  nationality: string;
   mothersName: string;
   registered?: boolean;
   gender?: string;

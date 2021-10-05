@@ -1,6 +1,6 @@
 <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
 
-<ng-container *ngIf="listUsers | async as data">
+<ng-container *ngIf="listUsers | async | clone as data">
   <p-table [value]="data" [(selection)]="user" responsiveLayout="scroll" class="styled-table" [autoLayout]="true">
     <ng-template pTemplate="header">
       <tr>
@@ -48,9 +48,10 @@
   </span>
   <span class="col-2">
     <button (click)="onEdit(user)" class="p-button-primary" pButton type="button" icon="pi pi-pencil" label="Edit"></button>
+    <p-toast></p-toast>
   </span>
   <span class="col-2">
-    <button (click)="confirm(user)"
+    <button (click)="deleteConfirmation(user)"
             pButton type="button" icon="pi pi-trash" label="Delete"
             class="p-button-danger"></button>
   </span>

@@ -1,21 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {User} from "../models/User";
-import {UserService} from "../services/user.service";
-
-interface Country {
-  name: string
-}
-
-interface Gender {
-  name: string
-}
+import {Router} from "@angular/router";
+import {SimulatedDb} from "../services/SimulatedDb";
+import {UsersFacade} from "../store/users.facade";
+import {Observable, Subject} from "rxjs";
+import {takeUntil} from "rxjs/operators";
 
 @Component({
   selector: 'app-user-search',
   templateUrl: './user-search.component.html',
-  styleUrls: ['./user-search.component.css']
+  styleUrls: ['./user-search.component.css'],
+  providers: []
 })
-export class UserSearchComponent implements OnInit {
+export class UserSearchComponent implements OnInit, OnDestroy {
+  listUsers: Observable<User[]> = this.usersFacade.listData;
+
+  title = "List of Users"
+
   //A kereses alatt ebben taroljuk azokat a usereket, akik megfelelnek a felteteleknek
   // @ts-ignore
   filteredUsers: User[]
@@ -24,10 +25,6 @@ export class UserSearchComponent implements OnInit {
   // @ts-ignore
   user: User;
 
-  //Ebben vannak a userek
-  // @ts-ignore
-  users: User[]
-
   //Ezekkel figyeljuk, hogy eppen a teljes vagy a szurt tablazat jelenjen meg
   // @ts-ignore
   fullListNeeded: boolean = true;
@@ -35,41 +32,24 @@ export class UserSearchComponent implements OnInit {
   searchListNeeded: boolean = false;
 
   //Chechboxhoz
-  registered: boolean = false;
-
-  //Sztatus autocomplete-hez
-  statuses: string[] = ['New','Done','In progress'];
+  // @ts-ignore
+  registered: boolean = null;
 
   //Autocomlete output
   // @ts-ignore
   output: string[];
 
   autoComplete(event: { query: string; }) {
-    this.output = this.statuses.filter(c => c.startsWith(event.query));
+    this.output = this.simulatedDb.statuses.filter(c => c.startsWith(event.query));
   }
-
-  //Feltolti a db-bol a userekkel az osztaly user tomjet
-  getUsers(): void {
-    this.userService.onGet().subscribe(users => {
-      this.users = users;
-    });
-  }
-
-  //Az "orszag" dropdown-hoz, ebben taroljuk az orszagokat
-  // @ts-ignore
-  countries: Country[];
 
   //Ebben taroljuk az eppen kivalasztott orszagot az "orszag" dropdown-bol
   // @ts-ignore
-  selectedCountry: Country = {name: ''};
-
-  //A "nem" select-hez, ebben taroljuk a nemeket
-  // @ts-ignore
-  genders: Gender[] = [];
+  selectedCountry: string
 
   //Ebben taroljuk az eppen kivalasztott nemet a "nem" select-bol
   // @ts-ignore
-  selectedGender: Gender = {name: ''};
+  selectedGender: string
 
   //A szuletesi datum a p-calendarhoz
   // @ts-ignore
@@ -79,23 +59,20 @@ export class UserSearchComponent implements OnInit {
   // @ts-ignore
   selectedStat: string = "";
 
-  constructor(private userService: UserService) {
-    this.countries = [
-      {name: ''},
-      {name: 'Hungary'},
-      {name: 'Germany'},
-      {name: 'United kingdom'}
-    ];
-    this.genders = [
-      {name: ''},
-      {name: 'Male'},
-      {name: 'Female'}
-    ];
+  constructor(private router: Router, public simulatedDb: SimulatedDb,
+              private usersFacade: UsersFacade) {
+  }
+
+  private unsubscribe$ = new Subject<void>();
+
+  ngOnDestroy() {
+    this.unsubscribe$.next()
+    this.unsubscribe$.complete()
   }
 
   ngOnInit(): void {
     //Feltoltjuk a users-et
-    this.getUsers()
+    this.usersFacade.loadList();
   }
 
   //Visszaadja szam formajaban a kapott Date tipusbol a honapot
@@ -153,20 +130,50 @@ export class UserSearchComponent implements OnInit {
     this.fullListNeeded = false;
     this.searchListNeeded = true;
 
-    this.filteredUsers = this.users;
-    this.filteredUsers = this.filteredUsers.filter(h => h.firstName.toLowerCase().indexOf(fname.toLowerCase()) !== -1);
+    this.listUsers.subscribe(users => {
+      this.filteredUsers = users
+    })
+    if (fname !== "") {
+      this.filteredUsers = this.filteredUsers.filter(h => h.firstName.toLowerCase().indexOf(fname.toLowerCase()) !== -1);
+    }
     this.filteredUsers = this.filteredUsers.filter(h => h.lastName.toLowerCase().indexOf(lname.toLowerCase()) !== -1);
+    this.filteredUsers = this.filteredUsers.filter(h => h.nationality.toLowerCase().indexOf(nat.toLowerCase()) !== -1);
     this.filteredUsers = this.filteredUsers.filter(h => h.mothersName.toLowerCase().indexOf(mname.toLowerCase()) !== -1);
     if (this.birthDate) {
       this.filteredUsers = this.filteredUsers.filter(h => h.birthDate.toLowerCase().indexOf(this.trimDate(this.birthDate.toString()).toLowerCase()) !== -1);
     }
     // @ts-ignore
     this.filteredUsers = this.filteredUsers.filter(h => h.status.toLowerCase().indexOf(this.selectedStat.toLowerCase()) !== -1);
-    // @ts-ignore
-    this.filteredUsers = this.filteredUsers.filter(h => h.gender.toLowerCase().indexOf(this.selectedGender.name.toLowerCase()) !== -1);
-    // @ts-ignore
-    this.filteredUsers = this.filteredUsers.filter(h => h.country.toLowerCase().indexOf(this.selectedCountry.name.toLowerCase()) !== -1);
+    if (this.selectedGender !== null && this.selectedGender !== undefined) {
+      // @ts-ignore
+      this.filteredUsers = this.filteredUsers.filter(h => h.gender.indexOf(this.selectedGender) !== -1);
+    }
+    if (this.selectedCountry !== null && this.selectedCountry !== undefined) {
+      // @ts-ignore
+      this.filteredUsers = this.filteredUsers.filter(h => h.country.toLowerCase().indexOf(this.selectedCountry.toLowerCase()) !== -1);
+    }
     this.filteredUsers = this.filteredUsers.filter(h => String(h.number).indexOf(numb.toString()) !== -1 );
-    this.filteredUsers = this.filteredUsers.filter(h => h.registered === this.registered)
+    if (this.registered !== null ) {
+      this.filteredUsers = this.filteredUsers.filter(h => h.registered === this.registered)
+    }
+  }
+
+  //Atiranyit az edit komponensre 0 id-val, ami a user letrehozasa
+  newUser() {
+    this.router.navigateByUrl('edit/0').then();
+  }
+
+  //Atiranyit az edit komponensre id alapjan
+  onEdit(user: User): void {
+    if (this.user){
+      this.router.navigateByUrl('edit/' + user.id).then();
+    }
+  }
+
+  //Torli a usert a db-bol
+  onDelete(user: User): void {
+    this.usersFacade.deleteUser(user)
+    this.fullListNeeded = true;
+    this.searchListNeeded = false;
   }
 }

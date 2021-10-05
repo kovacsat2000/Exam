@@ -1,3 +1,4 @@
+<h2>{{title}}</h2>
 <div class="grid">
   <span class="col-2">
     <input pInputText id="FName" placeholder="First name" #fname />
@@ -23,13 +24,13 @@
                     placeholder="Search" [dropdown]="true" ></p-autoComplete>
   </span>
   <span class="col-2">
-    <p-dropdown [options]="genders" [(ngModel)]="selectedGender" optionLabel="name"></p-dropdown>
+    <p-dropdown [options]="[''].concat(this.simulatedDb.genders)" [(ngModel)]="selectedGender"></p-dropdown>
   </span>
   <span class="col-2">
-    <p-dropdown [options]="countries" [(ngModel)]="selectedCountry" optionLabel="name"></p-dropdown>
+    <p-dropdown [options]="[''].concat(this.simulatedDb.countries)" [(ngModel)]="selectedCountry"></p-dropdown>
   </span>
   <span class="col-6">
-    <p-checkbox [(ngModel)]="registered" [binary]="true"></p-checkbox>
+    <p-triStateCheckbox [(ngModel)]="registered" ></p-triStateCheckbox>
   </span>
 
 
@@ -40,7 +41,7 @@
 
 
 
-<ng-container *ngIf="searchListNeeded && users">
+<ng-container *ngIf="searchListNeeded">
   <p-table [value]="filteredUsers" [(selection)]="user" responsiveLayout="scroll" class="styled-table" [autoLayout]="true">
     <ng-template pTemplate="header">
       <tr>
@@ -77,4 +78,21 @@
       </tr>
     </ng-template>
   </p-table>
+
+  <div class="grid">
+    <span class="col-2">
+      <button (click)="newUser()" class="p-button-success" pButton type="button" icon="pi pi-plus" label="New"></button>
+    </span>
+    <span class="col-2">
+      <button (click)="onEdit(user)" class="p-button-primary" pButton type="button" icon="pi pi-pencil" label="Edit"></button>
+    </span>
+    <span class="col-2">
+      <button (click)="onDelete(user)"
+              pButton type="button" icon="pi pi-trash" label="Delete"
+              class="p-button-danger"></button>
+    </span>
+    <span class="col-6">
+    </span>
+  </div>
+
 </ng-container>

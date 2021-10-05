@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable, of} from "rxjs";
 import {User} from "../models/User";
+import {InMemoryDataService} from "./in-memory-data.service";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,12 @@ export class UserService {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private inMem: InMemoryDataService) { }
+
+  //ID-t general
+  genId() {
+    return this.inMem.genId();
+  }
 
   //Elkeri a db-bol az egesz users-t
   onGet(): Observable<User[]> {
@@ -27,14 +33,14 @@ export class UserService {
   }
 
   //Torol a db-bol gez user-t id alapjan
-  onDelete(id: number): Observable<User> {
-    const url = `${this.usersUrl}/${id}`;
+  onDelete(user: User): Observable<User> {
+    const url = `${this.usersUrl}/${user.id}`;
     return this.http.delete<User>(url, this.httpOptions);
   }
 
   //Betesz egy user-t a db-be
-  onAdd(user: User): Observable<User> {
-    return this.http.post<User>(this.usersUrl, user, this.httpOptions);
+  onAdd(user: User): Observable<any> {
+    return this.http.post(this.usersUrl, user, this.httpOptions);
   }
 
   //Frissit egy user-t a db-be
