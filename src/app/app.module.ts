@@ -74,7 +74,6 @@ import {ToastModule} from 'primeng/toast';
     ToastModule
   ],
   providers: [
-
     UsersFacade,
     UsersRepository
   ],

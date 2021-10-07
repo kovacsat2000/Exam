@@ -35,6 +35,9 @@ export class UsersComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     //A user tomb feltoltese
     this.usersFacade.loadList();
+    this.usersFacade.listData.subscribe( user => {
+      console.log(user)
+    })
   }
 
   //Torli a usert a db-bol

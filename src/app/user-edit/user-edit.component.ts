@@ -6,8 +6,7 @@ import {RxwebValidators} from "@rxweb/reactive-form-validators";
 import {SimulatedDb} from "../services/SimulatedDb";
 import {UsersFacade} from "../store/users.facade";
 import {Observable, Subject} from "rxjs";
-import {takeUntil, tap} from "rxjs/operators";
-import {UserService} from "../services/user.service";
+import {UsersRepository} from "../store/users.repository";
 
 @Component({
   selector: 'app-user-edit',

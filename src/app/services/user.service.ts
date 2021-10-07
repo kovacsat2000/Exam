@@ -39,8 +39,8 @@ export class UserService {
   }
 
   //Betesz egy user-t a db-be
-  onAdd(user: User): Observable<any> {
-    return this.http.post(this.usersUrl, user, this.httpOptions);
+  onAdd(user: User): Observable<User> {
+    return this.http.post<User>(this.usersUrl, user, this.httpOptions);
   }
 
   //Frissit egy user-t a db-be

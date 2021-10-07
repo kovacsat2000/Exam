@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
-import {Actions, createEffect, Effect, ofType} from "@ngrx/effects";
+import {Actions, Effect, ofType} from "@ngrx/effects";
 import {UsersRepository} from "./users.repository";
-import {Observable, of} from "rxjs";
+import {Observable} from "rxjs";
 import {
   createUserAction, createUserResultAction, deleteUserAction, deleteUserResultAction,
   loadListAction,
@@ -10,15 +10,15 @@ import {
   loadUserResultAction,
   updateUserAction, updateUserResultAction
 } from "./users.actions";
-import {concatMap, debounce, flatMap, map, mergeMap, switchMap} from "rxjs/operators";
+import {flatMap, map, switchMap} from "rxjs/operators";
 import {User} from "../models/User";
 import {HandleErrorAction, toActionCreatorPayload} from "../util";
-import {UserService} from "../services/user.service";
 
 @Injectable()
 export class UsersEffects {
-  constructor(private actions: Actions, private usersRepository: UsersRepository, private userService: UserService) {
+  constructor(private actions: Actions, private usersRepository: UsersRepository) {
   }
+
   //Listazza a usereket
   @Effect()
   LoadList: Observable<any> = this.actions
@@ -49,39 +49,45 @@ export class UsersEffects {
       })
     );
 
-  //Frissit egy usert
-  updateUser = createEffect( () => this.actions.pipe(
-    ofType(updateUserAction.type),
-    mergeMap( (action) => {
-      return this.userService.onUpdate((action as any).payload).pipe(
-        map( user => {
-          return updateUserResultAction({payload: user})
-        })
-      )
-    })
-  ))
+  @Effect()
+  createUser: Observable<any> = this.actions
+    .pipe(
+      ofType(createUserAction),
+      flatMap((payload: any) => {
+        return this.usersRepository.addUser(payload.payload).pipe(
+          map((user: User) => {
+            return {payload: user};
+          })
+          , toActionCreatorPayload(createUserResultAction, HandleErrorAction)
+        );
+      })
+    );
 
-  //Letrehoz egy usert
-  createUser = createEffect( () => this.actions.pipe(
-    ofType(createUserAction.type),
-    mergeMap( (action) => {
-      return this.userService.onAdd((action as any).payload).pipe(
-        map( user => {
-          return createUserResultAction({payload: user})
-        })
-      )
-    })
-  ))
+  @Effect()
+  updateUser: Observable<any> = this.actions
+    .pipe(
+      ofType(updateUserAction),
+      flatMap((payload: any) => {
+        return this.usersRepository.updateUser(payload.payload).pipe(
+          map((user: User) => {
+            return {payload: user};
+          })
+          , toActionCreatorPayload(updateUserResultAction, HandleErrorAction)
+        );
+      })
+    );
 
-  //Torol egy usert
-  deleteUser = createEffect( () => this.actions.pipe(
-    ofType(deleteUserAction.type),
-    mergeMap( (action) => {
-      return this.userService.onDelete((action as any).payload).pipe(
-        map( user => {
-          return deleteUserResultAction()
-        })
-      )
-    })
-  ))
+  @Effect()
+  deleteUser: Observable<any> = this.actions
+    .pipe(
+      ofType(deleteUserAction),
+      flatMap((payload: any) => {
+        return this.usersRepository.deleteUser(payload.payload).pipe(
+          map((user: User) => {
+            return {payload: user};
+          })
+          , toActionCreatorPayload(deleteUserResultAction, HandleErrorAction)
+        );
+      })
+    );
 }

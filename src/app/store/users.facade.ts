@@ -5,19 +5,19 @@ import {usersSelectors} from "./users.selectors";
 import {Store} from "@ngrx/store";
 import {UsersState} from "./users.reducers";
 import {createUserAction, deleteUserAction, loadListAction, loadUserAction, updateUserAction} from "./users.actions";
-import {UserService} from "../services/user.service";
+import {UsersRepository} from "./users.repository";
 
 @Injectable()
 export class UsersFacade {
   public listData: Observable<User[]> = this.store.select(usersSelectors.listData);
   public userData: Observable<User> = this.store.select(usersSelectors.userData);
 
-  constructor(private store: Store<UsersState>, private userService: UserService) {
+  constructor(private store: Store<UsersState>, private usersRepository: UsersRepository) {
   }
 
-  //ID-t general
+  //ID-t generaL
   genId() {
-    return this.userService.genId();
+    return this.usersRepository.genId();
   }
 
   //Listazza a usereket
