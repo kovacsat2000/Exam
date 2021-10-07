@@ -130,7 +130,7 @@ export class UserSearchComponent implements OnInit, OnDestroy {
     this.fullListNeeded = false;
     this.searchListNeeded = true;
 
-    this.listUsers.subscribe(users => {
+    this.listUsers.pipe(takeUntil(this.unsubscribe$)).subscribe(users => {
       this.filteredUsers = users
     })
     if (fname !== "") {

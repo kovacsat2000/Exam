@@ -1,6 +1,6 @@
 <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
 
-<ng-container *ngIf="listUsers | async | clone as data">
+<ng-container *ngIf="listUsers | async | clone as data"><!--Az async pipe automatikusan unsubscribe-ol-->
   <p-table [value]="data" [(selection)]="user" responsiveLayout="scroll" class="styled-table" [autoLayout]="true">
     <ng-template pTemplate="header">
       <tr>

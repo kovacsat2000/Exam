@@ -20,5 +20,5 @@ export const createUserAction = createAction('[users] Create User', props<{paylo
 export const createUserResultAction = createAction('[users] Create User Result', props<{payload: User}>());
 
 //User torlese
-export const deleteUserAction = createAction('[users] Create User', props<{payload: User}>());
-export const deleteUserResultAction = createAction('[users] Create User Result');
+export const deleteUserAction = createAction('[users] Delete User', props<{payload: User}>());
+export const deleteUserResultAction = createAction('[users] Delete User Result');

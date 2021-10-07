@@ -9,7 +9,9 @@ import {
 export const usersFeatureName = 'users';
 
 export interface UsersState {
+  //Az osszes usert tartalmazo lista
   listData: User[];
+  //Egy usert tartalmaz
   userData: User;
 }
 

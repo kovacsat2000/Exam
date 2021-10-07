@@ -7,6 +7,7 @@ import {SimulatedDb} from "../services/SimulatedDb";
 import {UsersFacade} from "../store/users.facade";
 import {Observable, Subject} from "rxjs";
 import {UsersRepository} from "../store/users.repository";
+import {takeUntil} from "rxjs/operators";
 
 @Component({
   selector: 'app-user-edit',
@@ -56,7 +57,7 @@ export class UserEditComponent implements OnInit, OnDestroy {
     this.id = +this.route.snapshot.paramMap.get('id');
 
     this.usersFacade.loadUser(this.id);
-    this.editUser.subscribe( user => {
+    this.editUser.pipe(takeUntil(this.unsubscribe$)).subscribe( user => {
       this.form.patchValue(user)
     })
 

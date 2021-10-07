@@ -49,6 +49,7 @@ export class UsersEffects {
       })
     );
 
+  //Letrehoz egy usert
   @Effect()
   createUser: Observable<any> = this.actions
     .pipe(
@@ -63,6 +64,7 @@ export class UsersEffects {
       })
     );
 
+  //Frissit egy usert
   @Effect()
   updateUser: Observable<any> = this.actions
     .pipe(
@@ -77,6 +79,7 @@ export class UsersEffects {
       })
     );
 
+  //Torol egy usert
   @Effect()
   deleteUser: Observable<any> = this.actions
     .pipe(
